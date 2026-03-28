@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Railways Booking System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container-fluid {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        .badge-irctc {
+            display: inline-block;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .search-form-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .search-form-section h3 {
+            margin-bottom: 25px;
+            color: #1e3c72;
+            font-weight: 700;
+        }
+
+        .form-group-custom {
+            margin-bottom: 20px;
+        }
+
+        .form-group-custom label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-group-custom input,
+        .form-group-custom select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group-custom input:focus,
+        .form-group-custom select:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+            outline: none;
+        }
+
+        .form-group-custom input::placeholder {
+            color: #999;
+        }
+
+        .form-row-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 12px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.6);
+        }
+
+        .search-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .search-btn.loading {
+            position: relative;
+        }
+
+        .search-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            right: 20px;
+            top: 50%;
+            margin-top: -8px;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .alert-custom {
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: none;
+            padding: 15px 20px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-spinner.show {
+            display: block;
+        }
+
+        .spinner-border {
+            color: #2a5298;
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .trains-results-section {
+            display: none;
+        }
+
+        .trains-results-section.show {
+            display: block;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .results-header h3 {
+            color: #1e3c72;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .trains-list {
+            margin-top: 20px;
+        }
+
+        .train-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .train-card:hover {
+            border-color: #2a5298;
+            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .train-card.selected {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f5f9ff 100%);
+            border-color: #2a5298;
+            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.3);
+        }
+
+        .train-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .train-info-left {
+            flex: 1;
+        }
+
+        .train-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .train-number {
+            font-size: 0.95rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .train-rating {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .train-times {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .time-station {
+            text-align: center;
+        }
+
+        .time-station .time {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #2a5298;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .time-station .station {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+            display: block;
+        }
+
+        .time-station .day {
+            font-size: 0.85rem;
+            color: #999;
+            display: block;
+        }
+
+        .duration-info {
+            text-align: center;
+            color: #666;
+        }
+
+        .duration-info .duration-time {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #2a5298;
+            margin-bottom: 5px;
+        }
+
+        .duration-info .duration-label {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .arrow {
+            display: flex;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #2a5298;
+        }
+
+        .train-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .detail-box {
+            background: #f9f9f9;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e3c72;
+            display: block;
+        }
+
+        .seat-chart-section {
+            display: none;
+        }
+
+        .seat-chart-section.show {
+            display: block;
+        }
+
+        .coach-section {
+            margin-bottom: 40px;
+        }
+
+        .coach-name {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .coach-details {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .seats-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 0 0 8px 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .legend-box {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .legend-box.available {
+            background-color: #fff;
+            color: #2a5298;
+            border-color: #2a5298;
+        }
+
+        .legend-box.booked {
+            background-color: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+
+        .legend-box.selected {
+            background-color: #2a5298;
+            color: white;
+            border-color: #2a5298;
+        }
+
+        .seat-row {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .seat-row.side-aisle {
+            grid-template-columns: repeat(2, 1fr) 20px repeat(2, 1fr) 20px repeat(2, 1fr);
+        }
+
+        .seat {
+            aspect-ratio: 1;
+            background-color: white;
+            border: 2px solid #2a5298;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2a5298;
+            transition: all 0.3s ease;
+        }
+
+        .seat:hover:not(.booked) {
+            background-color: #f0f4ff;
+            transform: scale(1.08);
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.3);
+        }
+
+        .seat.booked {
+            background-color: #e74c3c;
+            border-color: #e74c3c;
+            color: white;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .seat.selected {
+            background-color: #2a5298;
+            border-color: #2a5298;
+            color: white;
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.5);
+            transform: scale(1.08);
+        }
+
+        .aisle {
+            background-color: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .row-number {
+            font-weight: 600;
+            color: #2a5298;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .summary {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 5px solid #2a5298;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary h5 {
+            color: #1e3c72;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            padding-top: 15px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2a5298;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-custom {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-book {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(42, 82, 152, 0.4);
+        }
+
+        .btn-book:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.6);
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #ecf0f1;
+            color: #333;
+            border: 2px solid #bdc3c7;
+        }
+
+        .btn-secondary:hover {
+            background-color: #bdc3c7;
+            color: white;
+        }
+
+        .no-trains {
+            text-align: center;
+            padding: 50px 20px;
+            color: #666;
+        }
+
+        .no-trains i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-row-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .train-times {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .seat-row {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+
+            .main-card {
+                padding: 20px;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .main-card {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .search-form-section {
+                padding: 20px;
+            }
+
+            .legend {
+                gap: 15px;
+                font-size: 0.9rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <div class="header">
+            <div class="badge-irctc">
+                <i class="fas fa-certificate"></i>Indian Railways
+            </div>
+            <h1><i class="fas fa-train"></i> Indian Railways</h1>
+            <p>Official Online Booking System</p>
+        </div>
+
+        <div class="main-card">
+            <!-- Search Form Section -->
+            <div class="search-form-section" id="searchFormSection">
+                <h3><i class="fas fa-search"></i> Find Trains</h3>
+                <form id="searchForm">
+                    <div class="form-row-grid">
+                        <div class="form-group-custom">
+                            <label for="source">From (Source Station)</label>
+                            <input 
+                                type="text" 
+                                id="source" 
+                                name="source" 
+                                placeholder="e.g., Delhi, Mumbai, Bangalore..." 
+                                autocomplete="off"
+                                required>
+                            <small class="text-muted">Enter station name</small>
+                        </div>
+                        <div class="form-group-custom">
+                            <label for="destination">To (Destination Station)</label>
+                            <input 
+                                type="text" 
+                                id="destination" 
+                                name="destination" 
+                                placeholder="e.g., Mumbai, Bangalore, Chennai..." 
+                                autocomplete="off"
+                                required>
+                            <small class="text-muted">Enter station name</small>
+                        </div>
+                    </div>
+
+                    <div class="form-row-grid">
+                        <div class="form-group-custom">
+                            <label for="journeyDate">Journey Date</label>
+                            <input type="date" id="journeyDate" name="journeyDate" required>
+                            <small class="text-muted">Select your travel date</small>
+                        </div>
+                        <div class="form-group-custom">
+                            <label for="passengers">Number of Passengers</label>
+                            <select id="passengers" name="passengers" required>
+                                <option value="">Select number of passengers</option>
+                                <option value="1">1 Passenger</option>
+                                <option value="2">2 Passengers</option>
+                                <option value="3">3 Passengers</option>
+                                <option value="4">4 Passengers</option>
+                                <option value="5">5 Passengers</option>
+                                <option value="6">6 Passengers</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="search-btn" id="searchBtn">
+                        <i class="fas fa-search"></i> Search Trains
+                    </button>
+                </form>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="loading-text">Searching trains from Indian Railways...</div>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alertContainer"></div>
+
+            <!-- Trains Results Section -->
+            <div id="trainsResultsSection" class="trains-results-section">
+                <div class="results-header">
+                    <h3 id="searchResultsTitle"></h3>
+                    <button class="btn-custom btn-secondary" id="newSearchBtn">
+                        <i class="fas fa-search"></i> New Search
+                    </button>
+                </div>
+                <div id="trainsList" class="trains-list"></div>
+            </div>
+
+            <!-- Seat Chart Section -->
+            <div id="seatChartSection" class="seat-chart-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #eee; padding-bottom: 20px;">
+                    <h3 style="color: #1e3c72; margin: 0; font-weight: 700;">Select Your Seats</h3>
+                    <button class="btn-custom btn-secondary" id="newSearchBtn2">
+                        <i class="fas fa-search"></i> Back to Search
+                    </button>
+                </div>
+
+                <!-- Selected Train Info -->
+                <div id="selectedTrainDisplay" style="background: linear-gradient(135deg, #f0f4ff 0%, #f5f9ff 100%); padding: 20px; border-radius: 10px; margin-bottom: 25px; border-left: 5px solid #2a5298;"></div>
+
+                <!-- Legend -->
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-box available">A</div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box booked">B</div>
+                        <span>Booked</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box selected">S</div>
+                        <span>Selected</span>
+                    </div>
+                </div>
+
+                <!-- Coaches Container -->
+                <div id="coachesContainer"></div>
+
+                <!-- Summary -->
+                <div class="summary">
+                    <h5><i class="fas fa-receipt"></i> Booking Summary</h5>
+                    <div class="summary-row">
+                        <span>Selected Seats:</span>
+                        <span id="selectedSeatsDisplay">None</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Number of Seats:</span>
+                        <span id="seatCountDisplay">0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Fare per Seat:</span>
+                        <span id="farePerSeat">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Base Fare:</span>
+                        <span id="baseFareDisplay">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Taxes & Charges (18% GST):</span>
+                        <span id="taxesDisplay">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Total Amount:</span>
+                        <span id="totalAmountDisplay">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-custom btn-book" id="bookBtn">
+                        <i class="fas fa-check-circle"></i> Continue to Payment
+                    </button>
+                    <button class="btn-custom btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i> Reset Selection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Application State
+        const appState = {
+            selectedTrain: null,
+            selectedSeats: new Map(),
+            searchParams: {},
+            allTrains: []
+        };
+
+        // Station Database with correct station codes
+        const stationDatabase = {
+            'delhi': { code: 'NDLS', name: 'New Delhi' },
+            'new delhi': { code: 'NDLS', name: 'New Delhi' },
+            'mumbai': { code: 'CSTM', name: 'Mumbai CST' },
+            'bangalore': { code: 'SBC', name: 'Bangalore City' },
+            'hyderabad': { code: 'SC', name: 'Hyderabad Secunderabad' },
+            'kolkata': { code: 'KOAA', name: 'Kolkata' },
+            'chennai': { code: 'MAS', name: 'Chennai Central' },
+            'coimbatore': { code: 'CBE', name: 'Coimbatore Junction' },
+            'salem': { code: 'SAL', name: 'Salem Junction' },
+            'pune': { code: 'PUNE', name: 'Pune' },
+            'ahmedabad': { code: 'ADI', name: 'Ahmedabad' },
+            'jaipur': { code: 'JP', name: 'Jaipur' },
+            'lucknow': { code: 'LKO', name: 'Lucknow' },
+            'agra': { code: 'AG', name: 'Agra' },
+            'indore': { code: 'INDB', name: 'Indore' },
+            'surat': { code: 'ST', name: 'Surat' },
+            'vadodara': { code: 'BRC', name: 'Vadodara' },
+            'nagpur': { code: 'NGP', name: 'Nagpur' },
+            'bhopal': { code: 'BPL', name: 'Bhopal' },
+            'kochi': { code: 'KOCHI', name: 'Kochi' },
+            'trivandrum': { code: 'TVM', name: 'Thiruvananthapuram' },
+            'guwahati': { code: 'GHY', name: 'Guwahati' }
+        };
+
+        // Real train data - Popular trains between major Indian cities
+        const realTrainsData = {
+            'NDLS-CSTM': [
+                { name: 'Rajdhani Express', number: '12345', departure: '15:30', arrival: '22:45', duration: '7h 15m', fare: 850, coaches: 2, seats: 72 },
+                { name: 'Shatabdi Express', number: '12001', departure: '17:00', arrival: '23:15', duration: '6h 15m', fare: 650, coaches: 1, seats: 96 },
+                { name: 'Mumbai Mail', number: '12137', departure: '22:00', arrival: '06:55', duration: '8h 55m', fare: 450, coaches: 3, seats: 120 }
+            ],
+            'NDLS-SBC': [
+                { name: 'Shatabdi Express', number: '12007', departure: '06:30', arrival: '17:30', duration: '11h', fare: 750, coaches: 2, seats: 96 },
+                { name: 'Bangalore Express', number: '12297', departure: '20:35', arrival: '17:15', duration: '20h 40m', fare: 550, coaches: 3, seats: 108 }
+            ],
+            'NDLS-SC': [
+                { name: 'Shatabdi Express', number: '12039', departure: '05:50', arrival: '14:25', duration: '8h 35m', fare: 800, coaches: 2, seats: 96 },
+                { name: 'Godavari Express', number: '12723', departure: '17:55', arrival: '13:10', duration: '19h 15m', fare: 600, coaches: 3, seats: 120 }
+            ],
+            'CSTM-SBC': [
+                { name: 'Udyan Express', number: '12619', departure: '08:15', arrival: '21:50', duration: '13h 35m', fare: 700, coaches: 3, seats: 120 },
+                { name: 'Karnataka Express', number: '12627', departure: '10:10', arrival: '23:40', duration: '13h 30m', fare: 550, coaches: 2, seats: 108 }
+            ],
+            'NDLS-KOAA': [
+                { name: 'Rajdhani Express', number: '12301', departure: '16:00', arrival: '10:00', duration: '18h', fare: 900, coaches: 2, seats: 96 },
+                { name: 'Kalka Mail', number: '12311', departure: '21:00', arrival: '17:10', duration: '20h 10m', fare: 650, coaches: 3, seats: 120 }
+            ],
+            'NDLS-MAS': [
+                { name: 'Chennai Express', number: '12621', departure: '07:00', arrival: '22:00', duration: '15h', fare: 850, coaches: 3, seats: 120 },
+                { name: 'Tamil Nadu Express', number: '12625', departure: '10:00', arrival: '05:15', duration: '19h 15m', fare: 700, coaches: 2, seats: 108 }
+            ]
+        };
+
+        // Mock real train names for demo
+        const mockedTrainNames = [
+            'Rajdhani Express', 'Shatabdi Express', 'Duranto Express', 'Express Special',
+            'Premium Express', 'Mail Express', 'Intercity Express', 'City Express',
+            'SuperFast Express', 'AC Express'
+        ];
+
+        // Initialize - Set minimum date
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('journeyDate').min = tomorrow.toISOString().split('T')[0];
+        document.getElementById('journeyDate').max = new Date(today.getFullYear(), today.getMonth() + 3, today.getDate()).toISOString().split('T')[0];
+
+        // Form submission
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const source = document.getElementById('source').value.trim().toLowerCase();
+            const destination = document.getElementById('destination').value.trim().toLowerCase();
+            const journeyDate = document.getElementById('journeyDate').value;
+            const passengers = document.getElementById('passengers').value;
+
+            // Validate inputs
+            if (!source || !destination || !journeyDate || !passengers) {
+                showAlert('Please fill all fields', 'warning');
+                return;
+            }
+
+            if (source === destination) {
+                showAlert('Source and destination cannot be the same', 'warning');
+                return;
+            }
+
+            // Check if stations exist in database
+            if (!stationDatabase[source]) {
+                showAlert(`"${source}" - Station not found. Try: Delhi, Mumbai, Bangalore, etc.`, 'danger');
+                return;
+            }
+
+            if (!stationDatabase[destination]) {
+                showAlert(`"${destination}" - Station not found. Try: Delhi, Mumbai, Bangalore, etc.`, 'danger');
+                return;
+            }
+
+            appState.searchParams = {
+                source: stationDatabase[source].name,
+                sourceCode: stationDatabase[source].code,
+                destination: stationDatabase[destination].name,
+                destinationCode: stationDatabase[destination].code,
+                journeyDate,
+                passengers
+            };
+
+            // Show loading
+            document.getElementById('loadingSpinner').classList.add('show');
+            document.getElementById('trainsResultsSection').classList.remove('show');
+            document.getElementById('seatChartSection').classList.remove('show');
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1500));
+
+            // Get trains
+            const trains = generateTrains(appState.searchParams);
+            appState.allTrains = trains;
+
+            displayTrainsResults(trains);
+
+            document.getElementById('loadingSpinner').classList.remove('show');
+            document.getElementById('searchFormSection').style.display = 'none';
+        });
+
+        // Generate realistic train data
+        function generateTrains(params) {
+            const routeKey = `${params.sourceCode}-${params.destinationCode}`;
+            const baseTrains = realTrainsData[routeKey] || [];
+
+            if (baseTrains.length > 0) {
+                return baseTrains.map(train => ({
+                    ...train,
+                    source: params.source,
+                    destination: params.destination,
+                    journeyDate: params.journeyDate,
+                    rating: (4 + Math.random()).toFixed(1),
+                    coaches: generateCoaches(train.coaches, train.seats)
+                }));
+            }
+
+            // Fallback: Generate realistic trains for route
+            const numTrains = 2 + Math.floor(Math.random() * 2);
+            const trains = [];
+
+            for (let i = 0; i < numTrains; i++) {
+                const coachCount = 2 + Math.floor(Math.random() * 2);
+                trains.push({
+                    name: mockedTrainNames[Math.floor(Math.random() * mockedTrainNames.length)],
+                    number: String(12000 + Math.floor(Math.random() * 9999)),
+                    departure: String(Math.floor(Math.random() * 24)).padStart(2, '0') + ':' + String(Math.floor(Math.random() * 60)).padStart(2, '0'),
+                    arrival: String(Math.floor(Math.random() * 24)).padStart(2, '0') + ':' + String(Math.floor(Math.random() * 60)).padStart(2, '0'),
+                    duration: Math.floor(Math.random() * 12 + 6) + 'h ' + Math.floor(Math.random() * 60) + 'm',
+                    fare: 400 + Math.floor(Math.random() * 500),
+                    coaches: coachCount,
+                    seats: 60 + Math.floor(Math.random() * 60),
+                    source: params.source,
+                    destination: params.destination,
+                    journeyDate: params.journeyDate,
+                    rating: (3.5 + Math.random()).toFixed(1),
+                    coaches: generateCoaches(coachCount, 60 + Math.floor(Math.random() * 60))
+                });
+            }
+
+            return trains;
+        }
+
+        // Generate coach data
+        function generateCoaches(coachCount, totalSeats) {
+            const coaches = [];
+            const coachTypes = ['Sleeper', 'AC 2-Tier', 'AC 3-Tier', 'General'];
+            
+            for (let i = 0; i < coachCount; i++) {
+                const coachType = coachTypes[i % coachTypes.length];
+                const seatsInCoach = Math.ceil(totalSeats / coachCount);
+                const availableSeats = Math.ceil(seatsInCoach * (0.3 + Math.random() * 0.7));
+
+                coaches.push({
+                    coachId: String.fromCharCode(65 + i) + (i + 1),
+                    coachName: coachType + ' Class',
+                    coachType: coachType,
+                    totalSeats: seatsInCoach,
+                    availableSeats: availableSeats,
+                    fare: 400 + (i * 200) + Math.floor(Math.random() * 200),
+                    seats: generateSeats(seatsInCoach, availableSeats, String.fromCharCode(65 + i))
+                });
+            }
+
+            return coaches;
+        }
+
+        // Generate seat data
+        function generateSeats(totalSeats, availableSeats, coach) {
+            const seats = [];
+            let bookedCount = totalSeats - availableSeats;
+
+            for (let i = 1; i <= totalSeats; i++) {
+                const isBooked = Math.random() < (bookedCount / totalSeats);
+
+                seats.push({
+                    seatId: `${coach}${Math.ceil(i / 6)}${String.fromCharCode(65 + (i % 6))}`,
+                    row: Math.ceil(i / 6),
+                    number: i,
+                    booked: isBooked
+                });
+
+                if (isBooked) bookedCount--;
+            }
+
+            return seats;
+        }
+
+        // Display trains results
+        function displayTrainsResults(trains) {
+            const { source, destination, journeyDate, passengers } = appState.searchParams;
+            const formattedDate = formatDate(journeyDate);
+
+            document.getElementById('searchResultsTitle').innerHTML = 
+                `<i class="fas fa-list"></i> ${trains.length} Trains found from ${source} to ${destination} on ${formattedDate}`;
+
+            const trainsList = document.getElementById('trainsList');
+            trainsList.innerHTML = '';
+
+            if (trains.length === 0) {
+                trainsList.innerHTML = '<div class="no-trains"><i class="fas fa-ban"></i><p>No trains available for this route</p></div>';
+                document.getElementById('trainsResultsSection').classList.add('show');
+                return;
+            }
+
+            trains.forEach((train, index) => {
+                const card = createTrainCard(train, index);
+                trainsList.appendChild(card);
+            });
+
+            document.getElementById('trainsResultsSection').classList.add('show');
+        }
+
+        // Create train card
+        function createTrainCard(train, index) {
+            const card = document.createElement('div');
+            card.className = 'train-card';
+
+            const availableSeats = train.coaches.reduce((sum, coach) => sum + coach.availableSeats, 0);
+
+            card.innerHTML = `
+                <div class="train-card-header">
+                    <div class="train-info-left">
+                        <div class="train-name">${train.name}</div>
+                        <div class="train-number"><i class="fas fa-hashtag"></i> Train #${train.number}</div>
+                    </div>
+                    <div class="train-rating"><i class="fas fa-star"></i> ${train.rating}/5</div>
+                </div>
+
+                <div class="train-times">
+                    <div class="time-station">
+                        <span class="time">${train.departure}</span>
+                        <span class="station">${train.source}</span>
+                        <span class="day">Departure</span>
+                    </div>
+                    <div class="duration-info">
+                        <div style="text-align: center; padding: 0 10px;">
+                            <i class="fas fa-arrow-right" style="color: #2a5298; font-size: 1.5rem; margin: 0 10px;"></i>
+                        </div>
+                        <div class="duration-time">${train.duration}</div>
+                        <div class="duration-label">Journey Time</div>
+                    </div>
+                    <div class="time-station">
+                        <span class="time">${train.arrival}</span>
+                        <span class="station">${train.destination}</span>
+                        <span class="day">Arrival</span>
+                    </div>
+                </div>
+
+                <div class="train-details">
+                    <div class="detail-box">
+                        <span class="detail-label">Available Seats</span>
+                        <span class="detail-value" style="color: ${availableSeats > 20 ? '#27ae60' : '#e74c3c'};">${availableSeats}</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="detail-label">Classes</span>
+                        <span class="detail-value">${train.coaches.length}</span>
+                    </div>
+                    <div class="detail-box">
+                        <span class="detail-label">From</span>
+                        <span class="detail-value">₹${train.fare}</span>
+                    </div>
+                </div>
+            `;
+
+            card.addEventListener('click', () => selectTrain(train, card));
+
+            return card;
+        }
+
+        // Select train
+        function selectTrain(train, cardElement) {
+            document.querySelectorAll('.train-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            cardElement.classList.add('selected');
+            appState.selectedTrain = train;
+            appState.selectedSeats.clear();
+
+            displaySeatChart(train);
+
+            document.getElementById('trainsResultsSection').classList.remove('show');
+            document.getElementById('seatChartSection').classList.add('show');
+
+            setTimeout(() => {
+                document.getElementById('seatChartSection').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        // Display seat chart
+        function displaySeatChart(train) {
+            const selectedTrainDisplay = document.getElementById('selectedTrainDisplay');
+            selectedTrainDisplay.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <strong style="color: #2a5298;">Train Name</strong><br>${train.name} (#${train.number})
+                    </div>
+                    <div>
+                        <strong style="color: #2a5298;">Route</strong><br>${train.source} → ${train.destination}
+                    </div>
+                    <div>
+                        <strong style="color: #2a5298;">Date & Time</strong><br>${formatDate(train.journeyDate)} | ${train.departure} - ${train.arrival}
+                    </div>
+                    <div>
+                        <strong style="color: #2a5298;">Duration</strong><br>${train.duration}
+                    </div>
+                </div>
+            `;
+
+            const coachesContainer = document.getElementById('coachesContainer');
+            coachesContainer.innerHTML = '';
+
+            train.coaches.forEach((coach, index) => {
+                const coachElement = createCoachElement(coach, index);
+                coachesContainer.appendChild(coachElement);
+            });
+
+            updateSummary();
+        }
+
+        // Create coach element
+        function createCoachElement(coach, coachIndex) {
+            const section = document.createElement('div');
+            section.className = 'coach-section';
+
+            const coachHeader = document.createElement('div');
+            coachHeader.className = 'coach-name';
+            coachHeader.innerHTML = `
+                <span>${coach.coachName}</span>
+                <span class="coach-details">Available: ${coach.availableSeats} | Booked: ${coach.totalSeats - coach.availableSeats}</span>
+            `;
+
+            const seatsContainer = document.createElement('div');
+            seatsContainer.className = 'seats-container';
+
+            const rows = [];
+            let currentRow = [];
+            coach.seats.forEach((seat, index) => {
+                currentRow.push(seat);
+                if ((index + 1) % 6 === 0) {
+                    rows.push(currentRow);
+                    currentRow = [];
+                }
+            });
+            if (currentRow.length > 0) {
+                rows.push(currentRow);
+            }
+
+            rows.forEach((row, rowIndex) => {
+                const rowElement = document.createElement('div');
+                rowElement.className = 'seat-row side-aisle';
+
+                const rowNumber = document.createElement('div');
+                rowNumber.className = 'row-number';
+                rowNumber.textContent = rowIndex + 1;
+                rowElement.appendChild(rowNumber);
+
+                row.forEach((seat, seatIndex) => {
+                    if (seatIndex === 2 || seatIndex === 4) {
+                        const aisle = document.createElement('div');
+                        aisle.className = 'aisle';
+                        rowElement.appendChild(aisle);
+                    }
+
+                    const seatElement = document.createElement('div');
+                    seatElement.className = 'seat';
+                    seatElement.setAttribute('data-seat', seat.seatId);
+                    seatElement.setAttribute('data-coach', coach.coachId);
+                    seatElement.setAttribute('data-fare', coach.fare);
+                    seatElement.textContent = seat.number;
+
+                    if (seat.booked) {
+                        seatElement.classList.add('booked');
+                    } else {
+                        seatElement.classList.add('available');
+                        seatElement.addEventListener('click', () => toggleSeatSelection(seatElement));
+                    }
+
+                    rowElement.appendChild(seatElement);
+                });
+
+                seatsContainer.appendChild(rowElement);
+            });
+
+            section.appendChild(coachHeader);
+            section.appendChild(seatsContainer);
+
+            return section;
+        }
+
+        // Toggle seat selection
+        function toggleSeatSelection(seatElement) {
+            const seatId = seatElement.getAttribute('data-seat');
+            const coach = seatElement.getAttribute('data-coach');
+            const fare = parseFloat(seatElement.getAttribute('data-fare'));
+
+            if (seatElement.classList.contains('booked')) return;
+
+            if (seatElement.classList.contains('selected')) {
+                seatElement.classList.remove('selected');
+                appState.selectedSeats.delete(seatId);
+            } else {
+                seatElement.classList.add('selected');
+                appState.selectedSeats.set(seatId, { coach, fare });
+            }
+
+            updateSummary();
+        }
+
+        // Update summary
+        function updateSummary() {
+            const seatCount = appState.selectedSeats.size;
+            const seatsArray = Array.from(appState.selectedSeats.keys()).sort();
+
+            if (seatsArray.length === 0) {
+                document.getElementById('selectedSeatsDisplay').textContent = 'None';
+            } else {
+                document.getElementById('selectedSeatsDisplay').textContent = seatsArray.join(', ');
+            }
+
+            let baseFare = 0;
+            let farePerSeat = 0;
+            appState.selectedSeats.forEach(({ fare }) => {
+                baseFare += fare;
+            });
+
+            if (seatCount > 0) {
+                farePerSeat = baseFare / seatCount;
+            }
+
+            const taxes = Math.round(baseFare * 0.18);
+            const totalAmount = baseFare + taxes;
+
+            document.getElementById('seatCountDisplay').textContent = seatCount;
+            document.getElementById('farePerSeat').textContent = '₹' + Math.round(farePerSeat).toLocaleString('en-IN');
+            document.getElementById('baseFareDisplay').textContent = '₹' + baseFare.toLocaleString('en-IN');
+            document.getElementById('taxesDisplay').textContent = '₹' + taxes.toLocaleString('en-IN');
+            document.getElementById('totalAmountDisplay').textContent = '₹' + totalAmount.toLocaleString('en-IN');
+        }
+
+        // Book button
+        document.getElementById('bookBtn').addEventListener('click', () => {
+            if (appState.selectedSeats.size === 0) {
+                showAlert('Please select at least one seat', 'warning');
+                return;
+            }
+
+            const selectedArray = Array.from(appState.selectedSeats.keys()).join(', ');
+            const totalAmount = document.getElementById('totalAmountDisplay').textContent;
+
+            if (confirm(`Confirm Booking?\n\nTrain: ${appState.selectedTrain.name}\nSeats: ${selectedArray}\n${totalAmount}`)) {
+                const pnr = 'PNR' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                showAlert(`✓ Booking Successful!\n\nPNR: ${pnr}\n${totalAmount}`, 'success');
+                setTimeout(() => resetApplication(), 2000);
+            }
+        });
+
+        // Reset button
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            appState.selectedSeats.clear();
+            document.querySelectorAll('.seat.selected').forEach(seat => {
+                seat.classList.remove('selected');
+            });
+            updateSummary();
+        });
+
+        // New search buttons
+        [document.getElementById('newSearchBtn'), document.getElementById('newSearchBtn2')].forEach(btn => {
+            btn.addEventListener('click', () => resetApplication());
+        });
+
+        // Reset application
+        function resetApplication() {
+            appState.selectedTrain = null;
+            appState.selectedSeats.clear();
+            appState.searchParams = {};
+
+            document.getElementById('searchForm').reset();
+            document.getElementById('searchFormSection').style.display = 'block';
+            document.getElementById('trainsResultsSection').classList.remove('show');
+            document.getElementById('seatChartSection').classList.remove('show');
+            document.getElementById('alertContainer').innerHTML = '';
+
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('journeyDate').value = '';
+        }
+
+        // Show alert
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-custom alert-${type}`;
+            alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i> ${message}`;
+            container.innerHTML = '';
+            container.appendChild(alertDiv);
+
+            if (type === 'success') {
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 3000);
+            }
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-IN', options);
+        }
+    </script>
+</body>
+</html>
